@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "name": "beacon-console-ryan-vo",
+  "owner": "A220man",
+  "email": "ryandtvo@gmail.com",
+  "domain": "AI/ML developer tools",
+  "summary": "Work in progress: beacon-console-ryan-vo",
+  "workflows": [
+    "Browse and search validated scientific agent skills with versioned schemas",
+    "Execute skills with deterministic offline core and opt-in LLM explanations",
+    "Statistical genetics locus compare: GWAS + eQTL + LD + 4-panel render",
+    "Field onboarding guided ladder: prerequisites \u2192 maturity \u2192 motivation \u2192 vocabulary \u2192 framework \u2192 methods \u2192 frontier"
+  ],
+  "auth": "oidc-keycloak-saml-broker",
+  "llm_providers": [
+    "openai-compatible",
+    "anthropic",
+    "gemini",
+    "ollama"
+  ],
+  "status": "work-in-progress"
+}
