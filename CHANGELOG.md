@@ -1,0 +1,40 @@
+# Changelog
+
+## 1.0.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0.0] - 2026-10-14
+
+### Added
+- Initial release of Beacon Console
+- FastAPI backend with SQLAlchemy models (User, Skill, Execution, AuditLog)
+- React + TypeScript + Vite frontend with typed API client
+- OIDC authentication via Keycloak (Authorization Code + PKCE)
+- HttpOnly cookie sessions with CSRF protection
+- Role-based access control (viewer/operator/admin)
+- Skill catalog CRUD with pagination, filtering, search
+- Execution engine with deterministic offline core
+- Statistical genetics locus compare workflow (4 primitives)
+- Field onboarding guided workflow (5-rung ladder + decode mode)
+- Docker Compose with PostgreSQL, Redis, Keycloak
+- Comprehensive test suite (backend pytest, frontend vitest)
+- Health checks and audit logging
+- Provider-agnostic LLM adapter framework
+
+### Security
+- No hardcoded secrets or credentials
+- Tokens never logged
+- Demo mode binds to localhost only
+- Production mode refuses demo configuration
+
+### Infrastructure
+- Non-root Docker users
+- .dockerignore for both services
+- Healthchecks on all containers
+- CI workflow (backend tests, frontend build/test, Docker builds)
