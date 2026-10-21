@@ -4,7 +4,7 @@ Each round completes one feature or repair. Future items are planned, not implem
 
 ## Current round
 
-oidc-auth
+llm-explanations
 
 ## Roadmap
 
@@ -91,4 +91,18 @@ Acceptance:
 Implementation: `backend/app/api/executions.py:run_field_onboarding`
 
 Tests: `backend/tests/test_executions.py::TestDeterministicExecution::test_field_onboarding_deterministic`
+
+### llm-explanations — Opt-in LLM explanations for skill executions
+
+Status: done
+
+Acceptance:
+- POST /api/executions/{id}/explain endpoint generates advisory explanations
+- Supports OpenAI-compatible, Anthropic, Gemini, and Ollama providers
+- Returns skipped status when LLM_API_KEY not configured
+- Explanations labeled advisory and grounded in deterministic results
+
+Implementation: `backend/app/services/llm.py`, `backend/app/api/executions.py:explain_execution`
+
+Tests: `backend/tests/test_executions.py::TestLLMExplanation`, `backend/tests/test_executions.py::TestLLMService`
 

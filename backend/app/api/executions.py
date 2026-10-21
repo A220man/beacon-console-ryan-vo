@@ -8,8 +8,10 @@ import uuid
 from datetime import datetime, timezone
 
 from app.core.database import get_db_session
+from app.core.config import get_settings
 from app.api.auth import require_auth, require_role, UserRole
 from app.models import Skill, Execution, ExecutionStatus, User, AuditLog
+from app.services import generate_explanation
 
 router = APIRouter(prefix="/executions", tags=["executions"])
 
@@ -184,6 +186,57 @@ async def run_execution(
         "error_message": execution.error_message,
         "started_at": execution.started_at.isoformat() if execution.started_at else None,
         "completed_at": execution.completed_at.isoformat() if execution.completed_at else None,
+    }
+
+
+@router.post("/{execution_id}/explain")
+async def explain_execution(
+    execution_id: int,
+    session: AsyncSession = Depends(get_db_session),
+    user: User = Depends(require_auth),
+) -> dict:
+    """Generate an LLM explanation for a completed execution (opt-in, advisory)."""
+    query = select(Execution).options(selectinload(Execution.skill)).where(Execution.id == execution_id)
+    if user.role != UserRole.ADMIN:
+        query = query.where(Execution.user_id == user.id)
+
+    result = await session.execute(query)
+    execution = result.scalar_one_or_none()
+    if not execution:
+        raise HTTPException(status_code=404, detail="Execution not found")
+
+    if execution.status != ExecutionStatus.COMPLETED:
+        raise HTTPException(status_code=400, detail="Can only explain completed executions")
+
+    if not execution.output_result:
+        raise HTTPException(status_code=400, detail="Execution has no result to explain")
+
+    input_params = json.loads(execution.input_params)
+    deterministic_result = json.loads(execution.output_result)
+    settings = get_settings()
+
+    explanation_result = await generate_explanation(
+        skill_name=execution.skill.name,
+        skill_display_name=execution.skill.display_name,
+        input_params=input_params,
+        deterministic_result=deterministic_result,
+        settings=settings,
+    )
+
+    # Store explanation in audit log
+    audit = AuditLog(
+        user_id=user.id,
+        action="explain",
+        resource_type="execution",
+        resource_id=str(execution.id),
+        details=json.dumps({"explanation_status": explanation_result.get("status")}),
+    )
+    session.add(audit)
+    await session.commit()
+
+    return {
+        "execution_id": execution.id,
+        "explanation": explanation_result,
     }
 
 
