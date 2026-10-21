@@ -1,1 +1,147 @@
-{"schema_version":1,"current_feature":"oidc-auth","features":[{"id":"core-skeleton","title":"Core FastAPI/React skeleton with health check","status":"done","acceptance":["FastAPI app starts and serves /health endpoint","React + Vite frontend builds and serves","Docker Compose brings up backend, frontend, Keycloak, PostgreSQL","Backend and frontend tests run"],"implementation":["backend/app/main.py","backend/app/api/health.py","backend/requirements.txt","backend/Dockerfile","frontend/package.json","frontend/vite.config.ts","frontend/src/main.tsx","frontend/src/App.tsx","frontend/Dockerfile","docker-compose.yaml",".env.example"],"tests":["backend/tests/test_health.py","frontend/src/App.test.tsx"]},{"id":"oidc-auth","title":"OIDC authentication with Keycloak","status":"done","acceptance":["Login redirects to Keycloak","Callback exchanges code for tokens","Protected endpoints reject unauthenticated requests","Logout clears session and redirects to Keycloak logout"],"implementation":["backend/app/api/auth.py","backend/app/core/security.py","backend/app/core/config.py","keycloak/realm-export.json"],"tests":["backend/tests/test_auth.py"]},{"id":"skill-catalog","title":"Skill catalog CRUD and search","status":"done","acceptance":["List skills with pagination and filtering","Create/update/delete skills (admin)","Search skills by name, category, tags","View skill detail with metadata"],"implementation":["backend/app/api/skills.py","backend/app/models/__init__.py","frontend/src/pages/SkillsPage.tsx","frontend/src/pages/SkillDetailPage.tsx"],"tests":["backend/tests/test_skills.py"]},{"id":"skill-execution","title":"Skill execution engine with deterministic core","status":"done","acceptance":["Execute skill with input parameters","Track execution status and results","Deterministic offline mode works without LLM key","LLM explanations opt-in, labeled advisory"],"implementation":["backend/app/api/executions.py","backend/app/models/__init__.py","frontend/src/pages/ExecutionsPage.tsx","frontend/src/pages/ExecutionDetailPage.tsx"],"tests":["backend/tests/test_executions.py"]},{"id":"genetics-workflow","title":"Statistical genetics locus compare workflow","status":"done","acceptance":["Fetch GWAS catalog data for region","Fetch eQTL catalogue data for region","Compute LD from 1000 Genomes","Render locus compare plot (4 panels)"],"implementation":["backend/app/api/executions.py:run_locus_compare"],"tests":["backend/tests/test_executions.py::TestDeterministicExecution::test_locus_compare_deterministic"]},{"id":"field-onboarding","title":"Field onboarding guided workflow","status":"done","acceptance":["Prerequisite framework assessment","Field maturity classification (settled/emerging/contested)","Ladder progression: motivation → vocabulary → framework → methods → frontier","Decode mode for passage analysis"],"implementation":["backend/app/api/executions.py:run_field_onboarding"],"tests":["backend/tests/test_executions.py::TestDeterministicExecution::test_field_onboarding_deterministic"]}]}
+{
+  "schema_version": 1,
+  "current_feature": "llm-explanations",
+  "features": [
+    {
+      "id": "core-skeleton",
+      "title": "Core FastAPI/React skeleton with health check",
+      "status": "done",
+      "acceptance": [
+        "FastAPI app starts and serves /health endpoint",
+        "React + Vite frontend builds and serves",
+        "Docker Compose brings up backend, frontend, Keycloak, PostgreSQL",
+        "Backend and frontend tests run"
+      ],
+      "implementation": [
+        "backend/app/main.py",
+        "backend/app/api/health.py",
+        "backend/requirements.txt",
+        "backend/Dockerfile",
+        "frontend/package.json",
+        "frontend/vite.config.ts",
+        "frontend/src/main.tsx",
+        "frontend/src/App.tsx",
+        "frontend/Dockerfile",
+        "docker-compose.yaml",
+        ".env.example"
+      ],
+      "tests": [
+        "backend/tests/test_health.py",
+        "frontend/src/App.test.tsx"
+      ]
+    },
+    {
+      "id": "oidc-auth",
+      "title": "OIDC authentication with Keycloak",
+      "status": "done",
+      "acceptance": [
+        "Login redirects to Keycloak",
+        "Callback exchanges code for tokens",
+        "Protected endpoints reject unauthenticated requests",
+        "Logout clears session and redirects to Keycloak logout"
+      ],
+      "implementation": [
+        "backend/app/api/auth.py",
+        "backend/app/core/security.py",
+        "backend/app/core/config.py",
+        "keycloak/realm-export.json"
+      ],
+      "tests": [
+        "backend/tests/test_auth.py"
+      ]
+    },
+    {
+      "id": "skill-catalog",
+      "title": "Skill catalog CRUD and search",
+      "status": "done",
+      "acceptance": [
+        "List skills with pagination and filtering",
+        "Create/update/delete skills (admin)",
+        "Search skills by name, category, tags",
+        "View skill detail with metadata"
+      ],
+      "implementation": [
+        "backend/app/api/skills.py",
+        "backend/app/models/__init__.py",
+        "frontend/src/pages/SkillsPage.tsx",
+        "frontend/src/pages/SkillDetailPage.tsx"
+      ],
+      "tests": [
+        "backend/tests/test_skills.py"
+      ]
+    },
+    {
+      "id": "skill-execution",
+      "title": "Skill execution engine with deterministic core",
+      "status": "done",
+      "acceptance": [
+        "Execute skill with input parameters",
+        "Track execution status and results",
+        "Deterministic offline mode works without LLM key",
+        "LLM explanations opt-in, labeled advisory"
+      ],
+      "implementation": [
+        "backend/app/api/executions.py",
+        "backend/app/models/__init__.py",
+        "frontend/src/pages/ExecutionsPage.tsx",
+        "frontend/src/pages/ExecutionDetailPage.tsx"
+      ],
+      "tests": [
+        "backend/tests/test_executions.py"
+      ]
+    },
+    {
+      "id": "genetics-workflow",
+      "title": "Statistical genetics locus compare workflow",
+      "status": "done",
+      "acceptance": [
+        "Fetch GWAS catalog data for region",
+        "Fetch eQTL catalogue data for region",
+        "Compute LD from 1000 Genomes",
+        "Render locus compare plot (4 panels)"
+      ],
+      "implementation": [
+        "backend/app/api/executions.py:run_locus_compare"
+      ],
+      "tests": [
+        "backend/tests/test_executions.py::TestDeterministicExecution::test_locus_compare_deterministic"
+      ]
+    },
+    {
+      "id": "field-onboarding",
+      "title": "Field onboarding guided workflow",
+      "status": "done",
+      "acceptance": [
+        "Prerequisite framework assessment",
+        "Field maturity classification (settled/emerging/contested)",
+        "Ladder progression: motivation → vocabulary → framework → methods → frontier",
+        "Decode mode for passage analysis"
+      ],
+      "implementation": [
+        "backend/app/api/executions.py:run_field_onboarding"
+      ],
+      "tests": [
+        "backend/tests/test_executions.py::TestDeterministicExecution::test_field_onboarding_deterministic"
+      ]
+    },
+    {
+      "id": "llm-explanations",
+      "title": "Opt-in LLM explanations for skill executions",
+      "status": "done",
+      "acceptance": [
+        "POST /api/executions/{id}/explain endpoint generates advisory explanations",
+        "Supports OpenAI-compatible, Anthropic, Gemini, and Ollama providers",
+        "Returns skipped status when LLM_API_KEY not configured",
+        "Explanations labeled advisory and grounded in deterministic results"
+      ],
+      "implementation": [
+        "backend/app/services/llm.py",
+        "backend/app/api/executions.py:explain_execution"
+      ],
+      "tests": [
+        "backend/tests/test_executions.py::TestLLMExplanation",
+        "backend/tests/test_executions.py::TestLLMService"
+      ]
+    }
+  ]
+}
