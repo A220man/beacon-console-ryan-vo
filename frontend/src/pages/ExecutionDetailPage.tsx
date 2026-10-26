@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { api, Execution } from "../api";
+import { api, Execution, ExplanationResponse } from "../api";
 import { Button, Card, CardHeader, CardBody, Badge, LoadingSpinner, Alert } from "../components/ui";
 
 interface ExecutionDetail extends Execution {
@@ -15,7 +15,8 @@ export function ExecutionDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [running, setRunning] = useState(false);
-
+  const [explaining, setExplaining] = useState(false);
+  const [explanation, setExplanation] = useState<ExplanationResponse["explanation"] | null>(null);
   useEffect(() => {
     if (!id) return;
     let mounted = true;
@@ -55,6 +56,21 @@ export function ExecutionDetailPage() {
       console.error(err);
     } finally {
       setRunning(false);
+    }
+  };
+
+  const handleExplain = async () => {
+    if (!execution) return;
+    setExplaining(true);
+    setExplanation(null);
+    try {
+      const result = await api.explainExecution(execution.id);
+      setExplanation(result.explanation);
+    } catch (err) {
+      setError("Failed to generate explanation");
+      console.error(err);
+    } finally {
+      setExplaining(false);
     }
   };
 
@@ -118,8 +134,21 @@ export function ExecutionDetailPage() {
               )}
             </Button>
           ) : null}
+          {execution.status === "completed" && execution.output_result && !explaining && !explanation ? (
+            <Button variant="secondary" onClick={handleExplain}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mr-2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+              Explain
+            </Button>
+          ) : null}
+          {explaining && (
+            <Button disabled>
+              <LoadingSpinner size="sm" />
+              Explaining...
+            </Button>
+          )}
         </div>
-      </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
         <Card>
@@ -157,6 +186,43 @@ export function ExecutionDetailPage() {
         </Card>
       </div>
 
+      {explanation && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold">LLM Explanation</h2>
+              <Badge variant="secondary">Advisory</Badge>
+            </div>
+          </CardHeader>
+          <CardBody>
+            {explanation.status === "completed" && explanation.content ? (
+              <div className="space-y-3">
+                <div className="prose prose-sm max-w-none text-[var(--color-text)]">
+                  {explanation.content.split("\n").map((paragraph, i) => (
+                    <p key={i}>{paragraph}</p>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-2 text-xs text-[var(--color-text-muted)]">
+                  {explanation.provider && <span>Provider: {explanation.provider}</span>}
+                  {explanation.model && <span>Model: {explanation.model}</span>}
+                  {explanation.usage && <span>Tokens: {JSON.stringify(explanation.usage)}</span>}
+                </div>
+              </div>
+            ) : explanation.status === "skipped" ? (
+              <Alert variant="warning">
+                <p>{explanation.reason || "Explanation skipped"}</p>
+                <p className="text-sm mt-1">Configure LLM_API_KEY in backend settings to enable explanations.</p>
+              </Alert>
+            ) : explanation.status === "error" ? (
+              <Alert variant="danger">
+                <p>{explanation.reason || "Failed to generate explanation"}</p>
+              </Alert>
+            ) : null}
+          </CardBody>
+        </Card>
+      )}
+
+
       <Card>
         <CardHeader>
           <h2 className="text-lg font-semibold">Execution Timeline</h2>
@@ -187,5 +253,6 @@ export function ExecutionDetailPage() {
         </CardBody>
       </Card>
     </div>
+  </div>
   );
 }

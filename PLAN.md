@@ -101,8 +101,9 @@ Acceptance:
 - Supports OpenAI-compatible, Anthropic, Gemini, and Ollama providers
 - Returns skipped status when LLM_API_KEY not configured
 - Explanations labeled advisory and grounded in deterministic results
+- Frontend: Explain button on completed executions, displays explanation with advisory badge
 
-Implementation: `backend/app/services/llm.py`, `backend/app/api/executions.py:explain_execution`
+Implementation: `backend/app/services/llm.py`, `backend/app/api/executions.py:explain_execution`, `frontend/src/api/client.ts:explainExecution`, `frontend/src/pages/ExecutionDetailPage.tsx`
 
 Tests: `backend/tests/test_executions.py::TestLLMExplanation`, `backend/tests/test_executions.py::TestLLMService`
 
