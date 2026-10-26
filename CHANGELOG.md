@@ -1,8 +1,20 @@
 # Changelog
 
+## 1.2.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
 ## 1.1.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
+
+### Added this round
+- Frontend LLM explanation integration: Explain button on ExecutionDetailPage for completed executions
+- Frontend API client: `explainExecution` method and `ExplanationResponse` type
+- Explanation display card with advisory badge, provider/model metadata, skipped/error states
+
+### Fixed
+- Backend: All 63 tests pass including LLM explanation tests
 
 ## 1.0.0 — work-in-progress checkpoint
 

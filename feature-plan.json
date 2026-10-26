@@ -132,11 +132,14 @@
         "POST /api/executions/{id}/explain endpoint generates advisory explanations",
         "Supports OpenAI-compatible, Anthropic, Gemini, and Ollama providers",
         "Returns skipped status when LLM_API_KEY not configured",
-        "Explanations labeled advisory and grounded in deterministic results"
+        "Explanations labeled advisory and grounded in deterministic results",
+        "Frontend: Explain button on completed executions, displays explanation with advisory badge"
       ],
       "implementation": [
         "backend/app/services/llm.py",
-        "backend/app/api/executions.py:explain_execution"
+        "backend/app/api/executions.py:explain_execution",
+        "frontend/src/api/client.ts:explainExecution",
+        "frontend/src/pages/ExecutionDetailPage.tsx"
       ],
       "tests": [
         "backend/tests/test_executions.py::TestLLMExplanation",

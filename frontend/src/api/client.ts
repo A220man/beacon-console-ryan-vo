@@ -148,10 +148,29 @@ class ApiClient {
     return response.data;
   }
 
+  async explainExecution(id: number): Promise<ExplanationResponse> {
+    const response = await this.client.post(`/executions/${id}/explain`);
+    return response.data;
+  }
+
   async healthCheck(): Promise<HealthResponse> {
     const response = await this.client.get("/health");
     return response.data;
   }
+}
+
+
+export interface ExplanationResponse {
+  execution_id: number;
+  explanation: {
+    status: "completed" | "skipped" | "error";
+    content?: string;
+    reason?: string;
+    provider?: string;
+    model?: string;
+    advisory: boolean;
+    usage?: Record<string, unknown>;
+  };
 }
 
 export const api = new ApiClient();
