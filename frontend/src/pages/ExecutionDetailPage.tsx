@@ -215,7 +215,7 @@ export function ExecutionDetailPage() {
               </Alert>
             ) : explanation.status === "error" ? (
               <Alert variant="danger">
-                <p>{explanation.reason || "Failed to generate explanation"}</p>
+                <p>{explanation.error || "Failed to generate explanation"}</p>
               </Alert>
             ) : null}
           </CardBody>

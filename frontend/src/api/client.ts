@@ -166,6 +166,7 @@ export interface ExplanationResponse {
     status: "completed" | "skipped" | "error";
     content?: string;
     reason?: string;
+    error?: string;
     provider?: string;
     model?: string;
     advisory: boolean;
