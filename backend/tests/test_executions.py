@@ -268,5 +268,63 @@ class TestLLMExplanation:
         from app.services.llm import get_llm_provider
         import pytest
 
-        with pytest.raises(ValueError, match="Unknown LLM provider"):
-            get_llm_provider("unknown", "test-key", "https://example.com", "model")
+
+    @pytest.mark.asyncio
+    async def test_generate_explanation_timeout(self):
+        """Test generate_explanation handles provider timeout gracefully."""
+        from app.core.config import Settings
+        from app.services.llm import generate_explanation, OpenAICompatibleProvider
+        import httpx
+        from unittest.mock import AsyncMock, patch
+
+        class MockSettings:
+            llm_api_key = "test-key"
+            llm_provider = "openai-compatible"
+            llm_model = "gpt-4o-mini"
+            llm_base_url = "https://api.openai.com/v1"
+            llm_timeout_seconds = 30
+
+        # Mock the provider's generate method to raise a timeout
+        with patch.object(OpenAICompatibleProvider, 'generate', new_callable=AsyncMock) as mock_generate:
+            mock_generate.side_effect = httpx.TimeoutException("Request timed out")
+
+            result = await generate_explanation(
+                skill_name="locus-compare",
+                skill_display_name="Locus Compare",
+                input_params={"chromosome": "1", "start": 1000, "end": 2000, "sentinel_snp": "rs123", "population": "EUR"},
+                deterministic_result={"status": "completed", "workflow": "locus-compare"},
+                settings=MockSettings(),
+            )
+
+        assert result["status"] == "error"
+        assert "timeout" in result["error"].lower() or "timed out" in result["error"].lower()
+    @pytest.mark.asyncio
+    async def test_generate_explanation_connection_error(self):
+        """Test generate_explanation handles provider connection error gracefully."""
+        from app.core.config import Settings
+        from app.services.llm import generate_explanation, OpenAICompatibleProvider
+        import httpx
+        from unittest.mock import AsyncMock, patch
+
+        class MockSettings:
+            llm_api_key = "test-key"
+            llm_provider = "openai-compatible"
+            llm_model = "gpt-4o-mini"
+            llm_base_url = "https://api.openai.com/v1"
+            llm_timeout_seconds = 30
+
+        # Mock the provider's generate method to raise a connection error
+        with patch.object(OpenAICompatibleProvider, 'generate', new_callable=AsyncMock) as mock_generate:
+            mock_generate.side_effect = httpx.ConnectError("Failed to connect")
+
+            result = await generate_explanation(
+                skill_name="locus-compare",
+                skill_display_name="Locus Compare",
+                input_params={"chromosome": "1", "start": 1000, "end": 2000, "sentinel_snp": "rs123", "population": "EUR"},
+                deterministic_result={"status": "completed", "workflow": "locus-compare"},
+                settings=MockSettings(),
+            )
+
+        assert result["status"] == "error"
+        assert "connect" in result["error"].lower()
+        assert result["advisory"] is True

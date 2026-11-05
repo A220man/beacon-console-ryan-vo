@@ -218,10 +218,28 @@ async def generate_explanation(
             "usage": response.usage,
             "advisory": True,
         }
+    except httpx.TimeoutException as e:
+        return {
+            "status": "error",
+            "error": f"Request timed out after {settings.llm_timeout_seconds}s",
+            "advisory": True,
+        }
+    except httpx.ConnectError as e:
+        return {
+            "status": "error",
+            "error": f"Failed to connect to provider: {e}",
+            "advisory": True,
+        }
     except httpx.HTTPStatusError as e:
         return {
             "status": "error",
             "error": f"Provider error: {e.response.status_code}",
+            "advisory": True,
+        }
+    except httpx.RequestError as e:
+        return {
+            "status": "error",
+            "error": f"Request failed: {type(e).__name__}",
             "advisory": True,
         }
     except Exception as e:
