@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.4.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
+## 1.3.1 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
+### Improved
+- LLM explanation error handling: specific exception handling for `httpx.TimeoutException`, `httpx.ConnectError`, and `httpx.RequestError` with descriptive error messages (was generic "Generation failed")
+- Added tests for network timeout and connection error scenarios
+
 ## 1.3.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
