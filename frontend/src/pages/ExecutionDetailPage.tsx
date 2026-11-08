@@ -17,6 +17,7 @@ export function ExecutionDetailPage() {
   const [running, setRunning] = useState(false);
   const [explaining, setExplaining] = useState(false);
   const [explanation, setExplanation] = useState<ExplanationResponse["explanation"] | null>(null);
+  const [explanationError, setExplanationError] = useState<string | null>(null);
   useEffect(() => {
     if (!id) return;
     let mounted = true;
@@ -59,15 +60,15 @@ export function ExecutionDetailPage() {
     }
   };
 
-  const handleExplain = async () => {
+  const handleGenerateExplanation = async () => {
     if (!execution) return;
     setExplaining(true);
-    setExplanation(null);
+    setExplanationError(null);
     try {
       const result = await api.explainExecution(execution.id);
       setExplanation(result.explanation);
     } catch (err) {
-      setError("Failed to generate explanation");
+      setExplanationError("Failed to generate explanation");
       console.error(err);
     } finally {
       setExplaining(false);
@@ -134,14 +135,36 @@ export function ExecutionDetailPage() {
               )}
             </Button>
           ) : null}
-          {execution.status === "completed" && execution.output_result && !explaining && !explanation ? (
-            <Button variant="secondary" onClick={handleExplain}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mr-2">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              </svg>
-              Explain
-            </Button>
-          ) : null}
+          {execution.status === "completed" && execution.output_result && !explaining && (
+            <>
+              {!explanation ? (
+                <Button variant="secondary" onClick={handleGenerateExplanation}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mr-2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  Explain
+                </Button>
+              ) : (
+                <div className="flex gap-2">
+                  <Button variant="secondary" onClick={handleGenerateExplanation}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mr-2">
+                      <path d="M23 4v6h-6" />
+                      <path d="M1 20v-6h6" />
+                      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                    </svg>
+                    Regenerate
+                  </Button>
+                  <Button variant="outline" onClick={() => setExplanation(null)}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mr-2">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                    Clear
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
           {explaining && (
             <Button disabled>
               <LoadingSpinner size="sm" />
@@ -195,6 +218,11 @@ export function ExecutionDetailPage() {
             </div>
           </CardHeader>
           <CardBody>
+            {explanationError && (
+              <Alert variant="danger">
+                <p>{explanationError}</p>
+              </Alert>
+            )}
             {explanation.status === "completed" && explanation.content ? (
               <div className="space-y-3">
                 <div className="prose prose-sm max-w-none text-[var(--color-text)]">
@@ -221,8 +249,7 @@ export function ExecutionDetailPage() {
           </CardBody>
         </Card>
       )}
-
-
+      
       <Card>
         <CardHeader>
           <h2 className="text-lg font-semibold">Execution Timeline</h2>
