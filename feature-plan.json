@@ -145,6 +145,27 @@
         "backend/tests/test_executions.py::TestLLMExplanation",
         "backend/tests/test_executions.py::TestLLMService"
       ]
+    },
+    {
+      "id": "explanation-persistence",
+      "title": "Persist LLM explanations to database",
+      "status": "done",
+      "acceptance": [
+        "Explanation saved to Execution.explanation field on generation",
+        "GET /api/executions/{id} returns persisted explanation",
+        "Frontend loads and displays persisted explanation on page load",
+        "Explanation survives page refresh",
+        "Regenerate overwrites previous explanation"
+      ],
+      "implementation": [
+        "backend/app/models/__init__.py",
+        "backend/app/api/executions.py",
+        "frontend/src/api/client.ts",
+        "frontend/src/pages/ExecutionDetailPage.tsx"
+      ],
+      "tests": [
+        "backend/tests/test_executions.py::TestLLMExplanation"
+      ]
     }
   ]
 }

@@ -229,6 +229,7 @@ export interface Execution {
   status: "pending" | "running" | "completed" | "failed" | "cancelled";
   input_params: Record<string, unknown>;
   output_result: Record<string, unknown> | null;
+  explanation: ExplanationResponse["explanation"] | null;
   error_message: string | null;
   started_at: string | null;
   completed_at: string | null;

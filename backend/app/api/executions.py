@@ -81,13 +81,16 @@ async def get_execution(
     if not execution:
         raise HTTPException(status_code=404, detail="Execution not found")
 
+    output_result = json.loads(execution.output_result) if execution.output_result else None
+    explanation = json.loads(execution.explanation) if execution.explanation else None
     return {
         "id": execution.id,
         "skill_id": execution.skill_id,
         "skill_name": execution.skill.name if execution.skill else None,
         "status": execution.status.value,
         "input_params": json.loads(execution.input_params),
-        "output_result": json.loads(execution.output_result) if execution.output_result else None,
+        "output_result": output_result,
+        "explanation": explanation,
         "error_message": execution.error_message,
         "started_at": execution.started_at.isoformat() if execution.started_at else None,
         "completed_at": execution.completed_at.isoformat() if execution.completed_at else None,
@@ -222,6 +225,9 @@ async def explain_execution(
         deterministic_result=deterministic_result,
         settings=settings,
     )
+
+    # Persist explanation in execution record
+    execution.explanation = json.dumps(explanation_result)
 
     # Store explanation in audit log
     audit = AuditLog(

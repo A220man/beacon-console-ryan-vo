@@ -6,6 +6,7 @@ import { Button, Card, CardHeader, CardBody, Badge, LoadingSpinner, Alert } from
 interface ExecutionDetail extends Execution {
   input_params: Record<string, unknown>;
   output_result: Record<string, unknown> | null;
+  explanation: ExplanationResponse["explanation"] | null;
 }
 
 export function ExecutionDetailPage() {
@@ -28,7 +29,12 @@ export function ExecutionDetailPage() {
             ...e,
             input_params: e.input_params as Record<string, unknown>,
             output_result: e.output_result as Record<string, unknown> | null,
+            explanation: e.explanation as ExplanationResponse["explanation"] | null,
           });
+          // Load persisted explanation if available
+          if (e.explanation) {
+            setExplanation(e.explanation);
+          }
         }
       })
       .catch((err) => {
