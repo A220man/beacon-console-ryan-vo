@@ -1,8 +1,28 @@
 # Changelog
 
+## 1.6.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
 ## 1.5.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
+
+## 1.5.1 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
+### Added this round
+- Persisted LLM explanations: Explanation saved to `Execution.explanation` field in database
+- GET `/api/executions/{id}` returns persisted explanation
+- Frontend loads and displays persisted explanation on page load
+- Explanation survives page refresh; regenerate overwrites previous explanation
+
+### Changed
+- Added `explanation` field to Execution model (nullable JSON text)
+- Updated `explain_execution` endpoint to persist explanation
+- Updated `get_execution` endpoint to return persisted explanation
+- Updated frontend `Execution` interface and `ExecutionDetailPage` to load persisted explanation
 
 ## 1.4.0 — work-in-progress checkpoint
 

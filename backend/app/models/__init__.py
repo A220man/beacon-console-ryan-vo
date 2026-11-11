@@ -114,6 +114,7 @@ class Execution(Base):
     status: Mapped[ExecutionStatus] = mapped_column(Enum(ExecutionStatus), default=ExecutionStatus.PENDING, nullable=False)
     input_params: Mapped[str] = mapped_column(Text, nullable=False, default="{}")  # JSON
     output_result: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # JSON
+    explanation: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # JSON
     error_message: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     started_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
