@@ -268,7 +268,8 @@ class TestLLMExplanation:
         from app.services.llm import get_llm_provider
         import pytest
 
-
+        with pytest.raises(ValueError, match="Unknown LLM provider"):
+            get_llm_provider("nonexistent", "key", "base", "model")
     @pytest.mark.asyncio
     async def test_generate_explanation_timeout(self):
         """Test generate_explanation handles provider timeout gracefully."""

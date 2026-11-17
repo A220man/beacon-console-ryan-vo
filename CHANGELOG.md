@@ -1,6 +1,12 @@
 # Changelog
 
+## 1.7.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
 ## 1.6.0 — work-in-progress checkpoint
+
+Fixed missing unit test for LLM provider factory (TestLLMExplanation.test_get_llm_provider_unknown).
 
 Partial code published for continued development. Known issues: STATUS.md.
 
